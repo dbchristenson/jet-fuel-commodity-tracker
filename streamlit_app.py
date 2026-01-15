@@ -1,9 +1,17 @@
 import os
+import random
 from pathlib import Path
 
 import pandas as pd
 import plotly.express as px
 import streamlit as st
+
+# Roll for image
+image_roll = random.randint(1, len(os.listdir("resources/headers")))
+print("DO A BARREL ROLL: ", image_roll)
+image_location = os.listdir("resources/headers")[image_roll - 1]
+print(f"image_location: {image_location}")
+image_url = Path("resources") / Path("headers") / image_location
 
 # Set the title and favicon that appear in the Browser's tab bar.
 st.set_page_config(
@@ -110,12 +118,11 @@ commodity_df, assets = get_commodity_data()
 # -----------------------------------------------------------------------------
 # Streamlit App Layout
 """
-# :earth_americas: Jet Fuel Commodity Dashboard
+# :airplane: Jet Fuel Commodity Dashboard
 """
-
+st.image(image_url, width=700)
 """
 """
-
 # Year Selection
 min_value = commodity_df["Year"].min()
 max_value = commodity_df["Year"].max()
@@ -137,6 +144,13 @@ selected_assets = st.multiselect(
     default=assets[0],
     format_func=str.capitalize,
 )
+
+# Filter the data
+filtered_assets_df = commodity_df[
+    (commodity_df["Asset"].isin(selected_assets))
+    & (commodity_df["Year"] <= to_year)
+    & (from_year <= commodity_df["Year"])
+]
 
 # Frequency and Aggregation
 col1, col2 = st.columns(2)
@@ -166,7 +180,7 @@ if freq_map[freq_selection]:
     func_to_apply = agg_map[agg_method]
 
     df_plot = (
-        commodity_df.set_index("Date")
+        filtered_assets_df.set_index("Date")
         .groupby("Asset")["Price"]
         .resample(freq_map[freq_selection])
         .agg(func_to_apply)  # Applies .mean() or .last() dynamically
@@ -174,24 +188,13 @@ if freq_map[freq_selection]:
     )
 else:
     # Daily data is already discrete; no aggregation needed
-    df_plot = commodity_df
+    df_plot = filtered_assets_df
 
 ""
 ""
-
-# Filter the data
-filtered_assets_df = commodity_df[
-    (commodity_df["Asset"].isin(selected_assets))
-    & (commodity_df["Year"] <= to_year)
-    & (from_year <= commodity_df["Year"])
-]
 
 st.header("Commodity Prices over Time", divider="gray")
-
-""
-""
-
-title_text = f"{freq_selection} Commodity Prices ({agg_method})"
+title_text = f"{freq_selection} Commodity Prices {agg_method}"
 
 fig = px.line(df_plot, x="Date", y="Price", color="Asset", title=title_text)
 
