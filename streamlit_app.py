@@ -6,6 +6,8 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
+from app.analytics import data_granularity_and_aggregate_stats
+
 # Roll for image
 image_roll = random.randint(1, len(os.listdir("resources/headers")))
 print("DO A BARREL ROLL: ", image_roll)
@@ -123,27 +125,31 @@ commodity_df, assets = get_commodity_data()
 st.image(image_url, width=700)
 """
 """
+
+col1a, col2a = st.columns(2)
 # Year Selection
 min_value = commodity_df["Year"].min()
 max_value = commodity_df["Year"].max()
 
-from_year, to_year = st.slider(
-    "Which years are you interested in?",
-    min_value=min_value,
-    max_value=max_value,
-    value=[min_value, max_value],
-)
+with col1a:
+    from_year, to_year = st.slider(
+        "Which years are you interested in?",
+        min_value=min_value,
+        max_value=max_value,
+        value=[2020, max_value],
+    )
 
 # Asset Selection
 if not len(assets):
     st.warning("Select at least one asset")
 
-selected_assets = st.multiselect(
-    "Which assets would you like to view?",
-    assets,
-    default=assets[0],
-    format_func=str.capitalize,
-)
+with col2a:
+    selected_assets = st.multiselect(
+        "Which assets would you like to view?",
+        assets,
+        default=assets[0],
+        format_func=str.capitalize,
+    )
 
 # Filter the data
 filtered_assets_df = commodity_df[
@@ -153,49 +159,37 @@ filtered_assets_df = commodity_df[
 ]
 
 # Frequency and Aggregation
-col1, col2 = st.columns(2)
+col1b, col2b = st.columns(2)
 
-with col1:
+with col1b:
     freq_selection = st.radio(
         "Select Frequency:",
         options=["Daily", "Weekly", "Monthly"],
         horizontal=True,
     )
 
-with col2:
+with col2b:
     agg_method = st.radio(
         "Aggregation Method:",
-        options=["Mean (Average)", "Last (Closing)"],
+        options=["Average Price", "Close Price"],
         horizontal=True,
     )
 
-# Map UI text to Pandas offset aliases
-freq_map = {"Daily": None, "Weekly": "W", "Monthly": "ME"}
-
-# Map UI text to specific pandas function names
-agg_map = {"Mean (Average)": "mean", "Last (Closing)": "last"}
-
-if freq_map[freq_selection]:
-    # Set the aggregation function dynamically based on the toggle
-    func_to_apply = agg_map[agg_method]
-
-    df_plot = (
-        filtered_assets_df.set_index("Date")
-        .groupby("Asset")["Price"]
-        .resample(freq_map[freq_selection])
-        .agg(func_to_apply)  # Applies .mean() or .last() dynamically
-        .reset_index()
-    )
-else:
-    # Daily data is already discrete; no aggregation needed
-    df_plot = filtered_assets_df
+df_plot = data_granularity_and_aggregate_stats(
+    freq_selection, agg_method, filtered_assets_df
+)
 
 ""
 ""
 
 st.header("Commodity Prices over Time", divider="gray")
-title_text = f"{freq_selection} Commodity Prices {agg_method}"
+title_text = f"{freq_selection} Commodity Prices ({agg_method})"
 
 fig = px.line(df_plot, x="Date", y="Price", color="Asset", title=title_text)
 
 st.plotly_chart(fig)
+
+""
+""
+
+st.header("Jet Fuel Current Events and News", divider="gray")
