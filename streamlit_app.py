@@ -9,11 +9,26 @@ import streamlit as st
 from app.analytics import data_granularity_and_aggregate_stats
 
 # Roll for image
-image_roll = random.randint(1, len(os.listdir("resources/headers")))
-print("DO A BARREL ROLL: ", image_roll)
-image_location = os.listdir("resources/headers")[image_roll - 1]
-print(f"image_location: {image_location}")
-image_url = Path("resources") / Path("headers") / image_location
+if "header_image" not in st.session_state:
+
+    # This block only runs ONCE per user session (on page load/refresh)
+    headers_dir = Path("resources") / "headers"
+    available_files = os.listdir(headers_dir)
+
+    if available_files:
+        # random.choice is cleaner than randint with indices
+        selected_file = random.choice(available_files)
+
+        print("DO A BARREL ROLL: New image selected.")
+        print(f"image_location: {selected_file}")
+
+        # Save the result to session state
+        st.session_state["header_image"] = headers_dir / selected_file
+    else:
+        st.session_state["header_image"] = None
+
+# Retrieve the image from state (this happens on every rerun)
+image_url = st.session_state["header_image"]
 
 # Set the title and favicon that appear in the Browser's tab bar.
 st.set_page_config(
@@ -122,7 +137,8 @@ commodity_df, assets = get_commodity_data()
 """
 # :airplane: Jet Fuel Commodity Dashboard
 """
-st.image(image_url, width=700)
+if image_url:
+    st.image(str(image_url), width="stretch")
 """
 """
 
@@ -182,10 +198,11 @@ df_plot = data_granularity_and_aggregate_stats(
 ""
 ""
 
-st.header("Commodity Prices over Time", divider="gray")
+st.header("US Commodity Prices over Time", divider="gray")
 title_text = f"{freq_selection} Commodity Prices ({agg_method})"
 
 fig = px.line(df_plot, x="Date", y="Price", color="Asset", title=title_text)
+fig.update_layout(legend_title_text="Commodity Name", hovermode="x unified")
 
 st.plotly_chart(fig)
 
