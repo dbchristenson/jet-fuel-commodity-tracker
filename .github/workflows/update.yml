@@ -1,0 +1,10 @@
+name: Weekly Data Update
+
+on:
+  schedule:
+    # Runs at 08:00 CST every Thursday
+    - cron: ''
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
