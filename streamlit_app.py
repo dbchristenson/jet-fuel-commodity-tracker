@@ -3,6 +3,7 @@ import streamlit as st
 from app.sections.commodity import render_commodity_section
 from app.sections.header import render_header
 from app.sections.news import render_news_section
+from app.sections.refinery import render_refinery_section
 
 # -----------------------------------------------------------------------------
 # Header Section (header.py)
@@ -17,7 +18,7 @@ render_commodity_section()
 # -----------------------------------------------------------------------------
 # Refinery Section (refinery.py)
 # -----------------------------------------------------------------------------
-st.header("US Refinery Utilization Rates", divider="gray")
+render_refinery_section()
 
 # -----------------------------------------------------------------------------
 # News Section (news.py)
