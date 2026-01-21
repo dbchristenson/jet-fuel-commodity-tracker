@@ -35,7 +35,7 @@ def setup_driver():
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument(
-        "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+        "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"  # noqa E501
     )
 
     service = Service(ChromeDriverManager().install())
@@ -83,7 +83,7 @@ def scrape_article_body(driver, url):
 
     try:
         # Wait for the dynamic container to load.
-        # using CSS Selector partial match for class containing 'NewsPost_newsPost__'
+        # using CSS Selector partial match for class containing 'NewsPost_newsPost__'   # noqa E501
         wait = WebDriverWait(driver, 10)
         article_container = wait.until(
             EC.presence_of_element_located(
@@ -168,7 +168,7 @@ def run_scraper():
                 continue
 
         print(
-            f"📝 Found {len(pending_articles)} recent articles to scrape details for."
+            f"📝 Found {len(pending_articles)} recent articles to scrape details for."  # noqa E501
         )
 
         # STEP 2: Visit each link and scrape body
