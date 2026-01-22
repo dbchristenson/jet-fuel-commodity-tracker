@@ -61,14 +61,11 @@ st.caption(
 # -----------------------------------------------------------------------------
 # Link to Human Analysis Page
 # -----------------------------------------------------------------------------
-st.markdown(
-    """
-    ---
-    ## Want to see our human analyst's take?
-    Check out the [Analysis Page](./2_Analysis) for
-    our weekly market outlook on U.S. Gulf Coast Kerosene-Type Jetfuel.
-    """
-)
+st.markdown("---")
+st.write("## Want to see our human analyst's take?")
+st.write("Check out our weekly market outlook on U.S. Gulf Coast Jetfuel.")
+
+st.page_link("pages/2_Analysis.py", label="Go to Analysis Page", icon="📈")
 
 # -----------------------------------------------------------------------------
 # Footer Section (footer.py)
