@@ -32,14 +32,14 @@ def fetch_market_news():
 
     # Calculate date range (NewsAPI free tier limit is ~1 month)
     end_date = datetime.now()
-    start_date = end_date - timedelta(days=28)
+    start_date = end_date - timedelta(days=30)
 
     # Query optimized for energy market keywords
     # OR logic puts breadth, AND logic ensures relevance.
     query = (
-        '(jet fuel OR heating oil OR diesel OR "kero" OR "middle'
-        ' distillates") AND (price OR shortage OR supply OR refinery'
-        ' OR "crack spread")'
+        "tariff OR trump OR opec or sanctions OR oil OR refinery OR distillate"
+        "OR jet fuel OR diesel OR war OR conflict OR gulf coast OR hurricane "
+        "OR recession OR inflation"
     )
 
     url = "https://newsapi.org/v2/everything"
@@ -113,7 +113,7 @@ def generate_prediction(news_data, price_data, refinery_data):
     genai.configure(api_key=GOOGLE_API_KEY)
 
     # Use Flash for speed and high context window (1M tokens)
-    model = genai.GenerativeModel("gemini-1.5-flash")
+    model = genai.GenerativeModel("gemini-3-flash-preview")
 
     # Construct the Prompt
     prompt = f"""

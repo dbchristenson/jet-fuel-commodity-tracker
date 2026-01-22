@@ -58,13 +58,9 @@ def render_llm_section():
     st.caption(f"Last Analysis Run: {last_updated}")
 
     # 3. Chat Interface
-    # Using the Google Gemini logo for the avatar
-    gemini_avatar = (
-        "https://www.gstatic.com/lamda/images"
-        "/gemini_sparkle_v002_d4735304ff6292a690345.svg"
-    )
+    john_avatar = "resources/avatars/john.png"
 
-    with st.chat_message("assistant", avatar=gemini_avatar):
+    with st.chat_message("assistant", avatar=john_avatar):
         st.write("### Market Outlook")
 
         if "prediction_shown" not in st.session_state:

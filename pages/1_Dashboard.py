@@ -1,6 +1,7 @@
 import streamlit as st
 
 from app.sections.commodity import render_commodity_section
+from app.sections.llm_prediction import render_llm_section
 from app.sections.news import render_news_section
 from app.sections.refinery import render_refinery_section
 
@@ -18,8 +19,7 @@ st.markdown(
     1. Jet Fuel & Other Middle Distillates Spot Prices
     2. US Refinery Utilization Rates for Relevant Products
     3. Jet Fuel Current Events and News
-    4. Jet Fuel Price Prediction (LLM)
-    5. Human Price Prediction
+    4. Market Analysis by John the Eagle (LLM)
     """
 )
 
@@ -50,7 +50,8 @@ st.caption(
 # LLM Prediction Section (llm_prediction.py)
 # Powered by Gemini
 # -----------------------------------------------------------------------------
-st.header("Jet Fuel Price Prediction", divider="gray")
+st.header("John the Eagle Market Analysis", divider="gray")
+render_llm_section()
 st.caption(
     "Powered by Gemini",
     help="Gemini is fed quantitative data, current events, and jet-fuel specific news to inform its prediction. This application uses the Gemini Flash 3 model.",  # noqa E501
@@ -58,10 +59,16 @@ st.caption(
 )
 
 # -----------------------------------------------------------------------------
-# Jet Fuel Team Prediction Section (team_prediction.py)
+# Link to Human Analysis Page
 # -----------------------------------------------------------------------------
-st.header("Human Price Prediction", divider="gray")
-st.caption("Powered by Brains", help="", text_alignment="right")
+st.markdown(
+    """
+    ---
+    ## Want to see our human analyst's take?
+    Check out the [Analysis Page](./2_Analysis) for
+    our weekly market outlook on U.S. Gulf Coast Kerosene-Type Jetfuel.
+    """
+)
 
 # -----------------------------------------------------------------------------
 # Footer Section (footer.py)
