@@ -28,7 +28,7 @@ def stream_text(text):
     """Generator to simulate typing effect."""
     for word in text.split(" "):
         yield word + " "
-        time.sleep(0.02)  # Adjust speed here
+        time.sleep(0.04)  # Adjust speed here
 
 
 # -----------------------------------------------------------------------------
