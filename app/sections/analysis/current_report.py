@@ -1,4 +1,3 @@
-import os
 from pathlib import Path
 
 import streamlit as st
@@ -29,7 +28,7 @@ def render_current_report_section():
         with col1:
             st.info(
                 f"**The Week {CURRENT_WEEK} analysis is ready.**\n\n"
-                "This report includes a deep dive into recent refinery outages "
+                "This report includes a dive into recent refinery outages "
                 "in PADD 3 and their impact on jet fuel crack spreads."
             )
 
