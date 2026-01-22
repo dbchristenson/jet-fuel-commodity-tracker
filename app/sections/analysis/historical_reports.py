@@ -10,14 +10,14 @@ import streamlit as st
 REPORT_HISTORY = [
     {
         "week": 2,
-        "predicted": "⬆️",
-        "actual": "⬆️",  # Match (Green)
+        "predicted": "⬇️",
+        "actual": "❓",
         "filename": "resources/reports/jetdash_week_2_report.pdf",
     },
     {
         "week": 1,
         "predicted": "⬇️",
-        "actual": "⬆️",  # Mismatch (Red)
+        "actual": "⬆️",
         "filename": "resources/reports/jetdash_week_1_report.pdf",
     },
     # Add older weeks here...
