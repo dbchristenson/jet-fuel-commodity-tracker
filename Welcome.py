@@ -7,7 +7,7 @@ st.set_page_config(
     page_icon="🦅",
 )
 
-st.write("# Welcome to Jet Dash! 🦅")
+st.write("# Welcome to JetDash! 🦅")
 
 st.markdown(
     """

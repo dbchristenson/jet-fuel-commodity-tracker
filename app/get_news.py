@@ -82,8 +82,6 @@ def scrape_article_body(driver, url):
     driver.get(url)
 
     try:
-        # Wait for the dynamic container to load.
-        # using CSS Selector partial match for class containing 'NewsPost_newsPost__'   # noqa E501
         wait = WebDriverWait(driver, 10)
         article_container = wait.until(
             EC.presence_of_element_located(
@@ -91,7 +89,6 @@ def scrape_article_body(driver, url):
             )
         )
 
-        # Extract text from p, ul, ol, table tags inside this container
         content_parts = []
         tags = article_container.find_elements(
             By.CSS_SELECTOR, "p, ul, ol, table"
@@ -117,7 +114,7 @@ def run_scraper():
         print("🚀 Loading main page...")
         driver.get(START_URL)
 
-        # Wait specifically for the news items to appear
+        # Wait for news items to appear
         wait = WebDriverWait(driver, 15)
         wait.until(
             EC.presence_of_all_elements_located(
@@ -125,7 +122,6 @@ def run_scraper():
             )
         )
 
-        # Find all news item cards
         news_items = driver.find_elements(By.CLASS_NAME, "qa-news-item")
         print(f"🔎 Found {len(news_items)} items. Extracting metadata...")
 

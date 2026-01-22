@@ -8,10 +8,6 @@ import streamlit as st
 # Setup EIA API Key
 EIA_API_KEY = st.secrets.get("EIA_API_KEY")
 
-if not EIA_API_KEY:
-    # environment variable fallback
-    EIA_API_KEY = os.getenv("EIA_API_KEY")
-
 
 def fetch_refinery_data(start_date=None, end_date=None):
     """
