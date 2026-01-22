@@ -28,11 +28,4 @@ def render_header():
     # Retrieve the image from state (this happens on every rerun)
     image_url = st.session_state["header_image"]
 
-    # Set the title and favicon that appear in the Browser's tab bar.
-    st.set_page_config(
-        page_title="Jet Fuel Commodity Tracker",
-        page_icon=":earth_americas:",
-    )
-
-    st.header(":airplane: Jet Fuel Commodity Tracker")
     st.image(str(image_url) if image_url else None, width="stretch")

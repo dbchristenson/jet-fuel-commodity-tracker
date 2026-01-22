@@ -116,6 +116,12 @@ def get_refinery_data():
 def render_refinery_section():
     """Renders the Refinery Production Visualization Section."""
 
+    st.header(
+        "US Refinery Utilization Rates",
+        divider="gray",
+        help="Data sourced from the U.S. Energy Information Administration (EIA).",  # noqa E501
+    )
+
     # Load Data
     refinery_df, assets = get_refinery_data()
 
@@ -159,10 +165,7 @@ def render_refinery_section():
         & (from_year <= refinery_df["Year"])
     ].sort_values(by="Date")
 
-    st.write("")
-
     # Visualization
-    st.header("US Refinery Utilization Rates", divider="gray")
 
     fig = px.line(
         filtered_df,
@@ -179,3 +182,7 @@ def render_refinery_section():
     )
 
     st.plotly_chart(fig)
+    st.caption(
+        "Data Source: U.S. Energy Information Administration (EIA)",
+        text_alignment="right",
+    )

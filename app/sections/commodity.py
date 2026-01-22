@@ -167,6 +167,12 @@ def get_commodity_data():
 def render_commodity_section():
     """Renders the Commodity Price Visualization Section."""
 
+    st.header(
+        "US Commodity Prices ($/Gallon)",
+        divider="gray",
+        help="Data sourced from the U.S. Energy Information Administration (EIA).",  # noqa E501
+    )
+
     # Load Data
     commodity_df, assets = get_commodity_data()
 
@@ -232,7 +238,6 @@ def render_commodity_section():
         freq_selection, agg_method, filtered_assets_df
     )
 
-    st.header("US Commodity Prices ($/Gallon)", divider="gray")
     title_text = f"{freq_selection} Commodity Prices ({agg_method})"
 
     fig = px.line(
@@ -244,3 +249,7 @@ def render_commodity_section():
     fig.update_yaxes(title_text="Dollars per Gallon")
 
     st.plotly_chart(fig)
+    st.caption(
+        "Data Source: U.S. Energy Information Administration (EIA)",
+        text_alignment="right",
+    )
