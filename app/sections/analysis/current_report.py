@@ -21,11 +21,7 @@ def render_current_report_section():
         col1, col2 = st.columns([2, 1])
 
         with col1:
-            st.info(
-                f"**The Week {CURRENT_WEEK} analysis is ready.**\n\n"
-                "This report includes a dive into recent refinery outages "
-                "in PADD 3 and their impact on jet fuel crack spreads."
-            )
+            st.info(f"**The Week {CURRENT_WEEK} analysis is ready.**")
 
         with col2:
             # Centering the large button
