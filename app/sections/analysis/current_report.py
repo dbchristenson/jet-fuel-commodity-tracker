@@ -13,16 +13,11 @@ def render_current_report_section():
     Renders the download section for the current week's report.
     """
     st.header(f"Week {CURRENT_WEEK} Analysis Report", divider="gray")
-
-    # Construct the file path relative to the project root
-    # Assumption: Structure is root/app/sections/current_report.py
-    # So we go up two levels to root, then into resources/reports
-    project_root = Path(__file__).parents[2]
     filename = f"jetdash_week_{CURRENT_WEEK}_report.pdf"
-    file_path = project_root / "resources" / "reports" / filename
+    file_path = "resources/reports/" + filename
 
     # Check if report exists
-    if file_path.exists():
+    if Path(file_path).exists():
         col1, col2 = st.columns([2, 1])
 
         with col1:
