@@ -19,7 +19,7 @@ st.markdown(
     2. US Refinery Utilization Rates for Relevant Products
     3. Jet Fuel Current Events and News
     4. Jet Fuel Price Prediction (LLM)
-    5. Human Price Prediction
+    5.   Human Price Prediction
     """
 )
 
