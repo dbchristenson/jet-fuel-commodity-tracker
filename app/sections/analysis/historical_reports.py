@@ -6,12 +6,12 @@ import streamlit as st
 # Data Configuration
 # -----------------------------------------------------------------------------
 # Manual entry for historical accuracy tracking
-# Valid directions: "⬆️", "⬇️", "➡️"
+# Valid directions: "⬆️", "⬇️", "➡️", "❓"
 REPORT_HISTORY = [
     {
         "week": 2,
         "predicted": "⬇️",
-        "actual": "❓",
+        "actual": "⬇️",
         "filename": "resources/reports/jetdash_week_2_report.pdf",
     },
     {
