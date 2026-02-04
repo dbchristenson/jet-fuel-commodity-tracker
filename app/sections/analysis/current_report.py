@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 import streamlit as st
@@ -5,7 +6,12 @@ import streamlit as st
 # -----------------------------------------------------------------------------
 # Configuration
 # -----------------------------------------------------------------------------
-CURRENT_WEEK = 2  # Manually update this week number
+CURRENT_WEEK_JSON_DATA = "data/current_week.json"
+CURRENT_WEEK = 1
+
+with open(CURRENT_WEEK_JSON_DATA, "r") as json_file:
+    data = json.load(json_file)
+    CURRENT_WEEK = data.get("current_week", CURRENT_WEEK)
 
 
 def render_current_report_section():
