@@ -1,11 +1,7 @@
 .PHONY: update install clean check runner
 .DEFAULT_GOAL: runner
 
-update: install
-	get_data
-	get_news
-	scrape_data
-	get_current_events
+update: install get_data get_news scrape_data get_current_events
 
 get_current_events:
 	uv run python app/get_current_events.py
