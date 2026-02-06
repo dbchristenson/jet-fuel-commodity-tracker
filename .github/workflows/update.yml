@@ -2,9 +2,43 @@ name: Weekly Data Update
 
 on:
   schedule:
-    # Runs at 08:00 CST every Thursday
-    - cron: ''
+    # 17:00 UTC is 11:00 AM Chicago (CST)
+    - cron: '0 17 * * 4'
+  workflow_dispatch: # Allows you to run this manually for testing
 
 jobs:
-  update-data:
+  update-and-push:
     runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # Required to push changes back to the repo
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+      - name: Run data update
+        run: make runner
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          # Only commit if there are actually changes to the data
+          if git diff --quiet && git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Automated data update: $(date +'%Y-%m-%d')"
+            git push
+          fi
