@@ -202,21 +202,7 @@ def run_scraper():
 # ENTRY POINT
 # -------------------------------------------------------------------------
 if __name__ == "__main__":
-    action = (
-        input(
-            "Type 'scrape' to run new scrape, or press Enter to load cache: "
-        )
-        .strip()
-        .lower()
-    )
-
-    if action == "scrape":
-        data = run_scraper()
-    else:
-        data = load_from_cache()
-        if not data:
-            print("Cache is empty. Running scraper...")
-            data = run_scraper()
+    data = run_scraper()
 
     if data:
         print("\n--- Sample Output ---")
