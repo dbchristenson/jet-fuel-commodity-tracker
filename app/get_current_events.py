@@ -9,9 +9,10 @@ import streamlit as st
 # -----------------------------------------------------------------------------
 # Configuration
 # -----------------------------------------------------------------------------
-
-NEWS_API_KEY = st.secrets["NEWS_API_KEY"]
-GOOGLE_API_KEY = st.secrets["GEMINI_API_KEY"]
+NEWS_API_KEY = os.getenv("NEWS_API_KEY") or st.secrets.get("NEWS_API_KEY")
+GOOGLE_API_KEY = os.getenv("GEMINI_API_KEY") or st.secrets.get(
+    "GEMINI_API_KEY"
+)
 
 DATA_DIR = "data"
 PREDICTION_FILE = os.path.join(DATA_DIR, "llm_prediction_snapshot.json")

@@ -1,5 +1,6 @@
 name: Weekly Data Update
 
+
 on:
   schedule:
     # 17:00 UTC is 11:00 AM Chicago (CST)
@@ -28,6 +29,10 @@ jobs:
           echo "$HOME/.cargo/bin" >> $GITHUB_PATH
 
       - name: Run data update
+        env:
+          EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
+          NEWS_API_KEY: ${{ secrets.NEWS_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: make runner
 
       - name: Commit and push changes
