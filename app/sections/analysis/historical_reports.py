@@ -1,83 +1,61 @@
-from pathlib import Path
+import json
 
 import streamlit as st
 
-# -----------------------------------------------------------------------------
-# Data Configuration
-# -----------------------------------------------------------------------------
-# Manual entry for historical accuracy tracking
-# Valid directions: "⬆️", "⬇️", "➡️", "❓"
-REPORT_HISTORY = [
-    {
-        "week": 2,
-        "predicted": "⬇️",
-        "actual": "⬇️",
-        "filename": "resources/reports/jetdash_week_2_report.pdf",
-    },
-    {
-        "week": 1,
-        "predicted": "⬇️",
-        "actual": "⬆️",
-        "filename": "resources/reports/jetdash_week_1_report.pdf",
-    },
-    # Add older weeks here...
-]
+from app.sections.analysis.report_renderer import (
+    load_all_reports,
+    render_report_body,
+)
+
+CURRENT_WEEK_JSON_DATA = "data/current_week.json"
+CURRENT_WEEK = 1
+
+with open(CURRENT_WEEK_JSON_DATA, "r") as json_file:
+    data = json.load(json_file)
+    CURRENT_WEEK = data.get("current_week", CURRENT_WEEK)
 
 
 def render_historical_report_section():
     """
-    Renders a table of past reports with accuracy indicators
-    and download links.
+    Renders an accuracy table for past reports with expandable
+    native report views.
     """
     st.subheader("Historical Analysis Archive")
-    st.caption("Review past performance and download archived PDF reports.")
+    st.caption("Review past performance and archived analysis reports.")
 
-    # -------------------------------------------------------------------------
+    all_reports = load_all_reports()
+    # Filter out the current week
+    historical = [r for r in all_reports if r.get("week") != CURRENT_WEEK]
+
+    if not historical:
+        st.info("No historical reports available yet.")
+        return
+
     # Table Header
-    # -------------------------------------------------------------------------
-    # We use columns to simulate a table header
-    h_col1, h_col2, h_col3, h_col4 = st.columns([1, 1, 1, 2])
+    h_col1, h_col2, h_col3 = st.columns([1, 1, 1])
     h_col1.markdown("**Week**")
     h_col2.markdown("**Predicted**")
     h_col3.markdown("**Actual**")
-    h_col4.markdown("**Download**")
 
     st.divider()
 
-    # -------------------------------------------------------------------------
     # Table Rows
-    # -------------------------------------------------------------------------
+    for report in historical:
+        week = report.get("week")
+        pred = report.get("predicted", "❓")
+        actual = report.get("actual")
 
-    for report in REPORT_HISTORY:
-        week = report["week"]
-        pred = report["predicted"]
-        act = report["actual"]
-        fname = report["filename"]
+        # Color logic: green if correct, red if wrong, info if pending
+        if actual is None:
+            container_type = st.info
+        elif pred == actual:
+            container_type = st.success
+        else:
+            container_type = st.error
 
-        # Determine Color Logic: Green (success) if match, Red (error) if not
-        is_correct = pred == act
-        container_type = st.success if is_correct else st.error
-
-        # Determine File Availability
-        file_path = fname
-        file_data = None
-        is_disabled = True
-
-        print(Path(file_path).exists())
-        import os
-
-        print(os.listdir())
-
-        if Path(file_path).exists():
-            print(f"Found historical report: {file_path}")
-            with open(file_path, "rb") as f:
-                file_data = f.read()
-            is_disabled = False
-
-        # Render Row inside the colored container
         with container_type(body=True):
-            r_col1, r_col2, r_col3, r_col4 = st.columns(
-                [1, 1, 1, 2], vertical_alignment="center"
+            r_col1, r_col2, r_col3 = st.columns(
+                [1, 1, 1], vertical_alignment="center"
             )
 
             with r_col1:
@@ -87,21 +65,11 @@ def render_historical_report_section():
                 st.markdown(f"{pred}")
 
             with r_col3:
-                st.markdown(f"{act}")
+                st.markdown(f"{actual if actual else 'Pending'}")
 
-            with r_col4:
-                if not is_disabled:
-                    st.download_button(
-                        label="Download PDF",
-                        data=file_data,
-                        file_name=fname,
-                        mime="application/pdf",
-                        key=f"btn_hist_{week}",
-                    )
-                else:
-                    st.button(
-                        "Unavailable", disabled=True, key=f"btn_hist_{week}"
-                    )
+        # Expandable full report
+        with st.expander(f"View Week {week} Report"):
+            render_report_body(report)
 
 
 if __name__ == "__main__":
