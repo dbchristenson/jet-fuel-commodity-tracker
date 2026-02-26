@@ -448,7 +448,7 @@ wheels = [
 
 [[package]]
 name = "jet-fuel-commodity-tracker"
-version = "0.1.0"
+version = "1.2"
 source = { virtual = "." }
 dependencies = [
     { name = "bs4" },
