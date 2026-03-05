@@ -38,16 +38,14 @@ def fetch_market_news():
     # Query optimized for energy market keywords
     # OR logic puts breadth, AND logic ensures relevance.
     query = (
-        "tariff OR trump OR opec or sanctions OR oil OR refinery OR distillate"
+        "tariff OR trump OR opec OR sanctions OR oil OR refinery OR distillate "
         "OR jet fuel OR diesel OR war OR conflict OR gulf coast OR hurricane "
         "OR recession OR inflation"
     )
 
-    url = "https://newsapi.org/v2/everything"
+    url = "https://newsapi.org/v2/top-headlines"
     params = {
         "q": query,
-        "from": start_date.strftime("%Y-%m-%d"),
-        "sortBy": "relevancy",
         "language": "en",
         "apiKey": NEWS_API_KEY,
         "pageSize": 20,
@@ -96,12 +94,23 @@ def load_local_data(filename):
         return []
 
 
+def load_argus_articles():
+    """Loads Argus Media articles from cache, extracting llm_context."""
+    filepath = os.path.join(DATA_DIR, "argus_news_cache.json")
+    try:
+        with open(filepath, "r") as f:
+            data = json.load(f)
+            return [article["llm_context"] for article in data if "llm_context" in article]
+    except Exception:
+        return []
+
+
 # -----------------------------------------------------------------------------
 # 3. Generate Prediction (The "Bundle")
 # -----------------------------------------------------------------------------
 
 
-def generate_prediction(news_data, price_data, refinery_data):
+def generate_prediction(news_data, price_data, refinery_data, argus_data):
     """
     Sends aggregated context to Gemini Flash for a market prediction.
     """
@@ -122,18 +131,21 @@ def generate_prediction(news_data, price_data, refinery_data):
     in US Distillates (Jet Fuel, Diesel).
 
     ### Task
-    Analyze the provided recent news headlines and quantitative
-    market data to produce a short market outlook.
+    Analyze the provided recent news headlines, industry intelligence,
+    and quantitative market data to produce a short market outlook.
 
     ### Context Data
 
     1. **Recent Market News (Last 30 Days):**
     {json.dumps(news_data, indent=2)}
 
-    2. **Recent Spot Prices (Latest Records):**
+    2. **Argus Media Industry Intelligence (Jet Fuel Specialist Coverage):**
+    {json.dumps(argus_data, indent=2)}
+
+    3. **Recent Spot Prices (Latest Records):**
     {json.dumps(price_data, indent=2)}
 
-    3. **Recent Refinery Utilization (Latest Records):**
+    4. **Recent Refinery Utilization (Latest Records):**
     {json.dumps(refinery_data, indent=2)}
 
     ### Output Requirements
@@ -166,10 +178,11 @@ if __name__ == "__main__":
     news_digest = fetch_market_news()
     spot_prices = load_local_data("spot_prices.json")
     refinery_data = load_local_data("refinery_utilization.json")
+    argus_articles = load_argus_articles()
 
     # 2. Generate Prediction
     prediction_text = generate_prediction(
-        news_digest, spot_prices, refinery_data
+        news_digest, spot_prices, refinery_data, argus_articles
     )
 
     if prediction_text:
@@ -177,7 +190,7 @@ if __name__ == "__main__":
         output_payload = {
             "last_updated": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "prediction": prediction_text,
-            "news_source_count": len(news_digest),
+            "news_source_count": len(news_digest) + len(argus_articles),
         }
 
         with open(PREDICTION_FILE, "w") as f:
